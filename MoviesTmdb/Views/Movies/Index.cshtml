@@ -1,0 +1,19 @@
+﻿@model List<Movie>
+<h2>Movie List</h2>
+<form asp-action="FetchFromTmdb" method="post">
+    <button type="submit">Get from TMDB</button>
+</form>
+<form asp-action="DeleteAll" method="post">
+    <button type="submit">Delete All</button>
+</form>
+<a asp-action="Analysis">View Analysis</a>
+<table>
+    <tr><th>Title</th><th>Release Date</th></tr>
+    @foreach (var movie in Model)
+    {
+        <tr>
+            <td>@movie.Title</td>
+            <td>@movie.ReleaseDate?.ToString("yyyy-MM-dd")</td>
+        </tr>
+    }
+</table>

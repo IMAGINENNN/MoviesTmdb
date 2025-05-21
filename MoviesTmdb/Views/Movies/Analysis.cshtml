@@ -1,0 +1,23 @@
+﻿<h2>Analysis</h2>
+<h3>Top Directors</h3>
+<ul>
+    @foreach (var d in ViewBag.TopDirectors)
+    {
+        <li>@d.Name</li>
+    }
+</ul>
+<h3>Top Actors</h3>
+<ul>
+    @foreach (var a in ViewBag.TopActors)
+    {
+        <li>@a.Name</li>
+    }
+</ul>
+<h3>Popular Genre by Decade</h3>
+<ul>
+    @foreach (var item in ViewBag.GenreByDecade)
+    {
+        <li>@item.Decade: @item.TopGenre</li>
+    }
+</ul>
+<a asp-action="Index">Back</a>
