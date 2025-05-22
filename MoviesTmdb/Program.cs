@@ -12,7 +12,10 @@ builder.Services.AddDbContext<MoviesTmdbDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnectionString")));
 
 // Register TMDB API service with HttpClient
-builder.Services.AddHttpClient<TmdbService>();
+builder.Services.AddHttpClient<TmdbService>((sp, client) =>
+{
+    client.BaseAddress = new Uri("https://api.themoviedb.org/3/");
+}).Services.AddScoped<TmdbService>();
 
 var app = builder.Build();
 

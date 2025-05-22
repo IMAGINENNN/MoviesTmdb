@@ -1,19 +1,88 @@
-﻿@model List<Movie>
-<h2>Movie List</h2>
-<form asp-action="FetchFromTmdb" method="post">
-    <button type="submit">Get from TMDB</button>
-</form>
-<form asp-action="DeleteAll" method="post">
-    <button type="submit">Delete All</button>
-</form>
-<a asp-action="Analysis">View Analysis</a>
-<table>
-    <tr><th>Title</th><th>Release Date</th></tr>
-    @foreach (var movie in Model)
-    {
-        <tr>
-            <td>@movie.Title</td>
-            <td>@movie.ReleaseDate?.ToString("yyyy-MM-dd")</td>
-        </tr>
-    }
-</table>
+﻿@model List<MoviesTmdb.Models.Movie>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Movies TMDb</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 min-h-screen">
+    <div class="container mx-auto p-6">
+        <h2 class="text-3xl font-bold text-gray-800 mb-6">Movie List</h2>
+        <div class="flex space-x-4 mb-6">
+            <form asp-action="FetchFromTmdb" method="post">
+                <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 transition">Get from TMDB</button>
+            </form>
+            <form asp-action="DeleteAll" method="post">
+                <button type="submit" class="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600 transition">Delete All</button>
+            </form>
+            <a asp-action="Analysis" class="bg-gray-500 text-white px-4 py-2 rounded-md hover:bg-gray-600 transition">View Static Analysis</a>
+        </div>
+        <div class="flex flex-wrap gap-4 mb-6">
+            <button onclick="analyze('AnalyzeDirectorsByFilms', 'Top Directors by Film Count')" class="bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600 transition">Top Directors (Films)</button>
+            <button onclick="analyze('AnalyzeDirectorsByWatches', 'Top Directors by Watches')" class="bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600 transition">Top Directors (Watches)</button>
+            <button onclick="analyze('AnalyzeActors', 'Most Active Actors')" class="bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600 transition">Top Actors</button>
+            <button onclick="analyze('AnalyzeGenresByDecade', 'Popular Genres by Decade')" class="bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600 transition">Genres by Decade</button>
+        </div>
+        <div id="analysis-results" class="bg-white p-6 rounded-lg shadow-md mb-6"></div>
+        <div class="bg-white p-6 rounded-lg shadow-md">
+            <table class="w-full border-collapse">
+                <thead>
+                    <tr class="bg-gray-200">
+                        <th class="p-3 text-left text-gray-700">Title</th>
+                        <th class="p-3 text-left text-gray-700">Release Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var movie in Model)
+                    {
+                        <tr class="border-b hover:bg-gray-50">
+                            <td class="p-3">@movie.Title</td>
+                            <td class="p-3">@movie.ReleaseDate?.ToString("yyyy-MM-dd")</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        async function analyze(action, title) {
+            try {
+                const response = await fetch(`/Movies/${action}`, {
+                    method: 'GET',
+                    headers: { 'Accept': 'application/json' }
+                });
+                const data = await response.json();
+                let html = `<h3 class="text-xl font-semibold text-gray-800 mb-4">${title}</h3>`;
+
+                if (action === 'AnalyzeGenresByDecade') {
+                    html += '<ul class="list-disc pl-6">';
+                    data.forEach(decade => {
+                        html += `<li class="text-gray-600">${decade.decade}: ${decade.topGenres.map(g => `${g.name} (${g.count})`).join(', ')}</li>`;
+                    });
+                    html += '</ul>';
+                } else if (action === 'AnalyzeDirectorsByWatches') {
+                    html += '<ul class="list-disc pl-6">';
+                    data.forEach(item => {
+                        html += `<li class="text-gray-600">${item.director}: ${item.watches.toFixed(2)} popularity</li>`;
+                    });
+                    html += '</ul>';
+                } else {
+                    html += '<ul class="list-disc pl-6">';
+                    data.forEach(item => {
+                        html += `<li class="text-gray-600">${item.director || item.actor}: ${item.films || item.appearances}</li>`;
+                    });
+                    html += '</ul>';
+                }
+
+                document.getElementById('analysis-results').innerHTML = html;
+            } catch (error) {
+                document.getElementById('analysis-results').innerHTML = '<p class="text-red-500">Error loading analysis.</p>';
+                console.error('Error:', error);
+            }
+        }
+    </script>
+</body>
+</html>

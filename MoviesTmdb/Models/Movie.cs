@@ -6,6 +6,7 @@
         public string Title { get; set; }
         public DateTime? ReleaseDate { get; set; }
         public int TmdbId { get; set; }
+        public double Popularity { get; set; }
 
         public ICollection<MovieGenre> MovieGenres { get; set; }
         public ICollection<MovieActor> MovieActors { get; set; }

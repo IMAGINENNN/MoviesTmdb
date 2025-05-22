@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using MoviesTmdb.Data;
 
@@ -11,9 +12,11 @@ using MoviesTmdb.Data;
 namespace MoviesTmdb.Migrations
 {
     [DbContext(typeof(MoviesTmdbDbContext))]
-    partial class MoviesTmdbDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250522000944_AddPopularityToMovie")]
+    partial class AddPopularityToMovie
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
