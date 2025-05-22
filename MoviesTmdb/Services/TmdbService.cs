@@ -23,7 +23,7 @@ namespace MoviesTmdb.Services
             _apiKey = configuration["TMDB:ApiKey"] ?? throw new ArgumentNullException("TMDB:ApiKey is missing in configuration.");
         }
 
-        public async Task<List<Movie>> GetPopularMoviesAsync(int totalMovies = 20)
+        public async Task<List<Movie>> GetPopularMoviesAsync(int totalMovies = 100)
         {
             var movies = new List<Movie>();
             int moviesPerPage = 20;

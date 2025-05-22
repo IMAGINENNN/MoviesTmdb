@@ -31,7 +31,7 @@ namespace MoviesTmdb.Controllers
         [HttpPost]
         public async Task<IActionResult> FetchFromTmdb()
         {
-            var movies = await _tmdb.GetPopularMoviesAsync(20); // Fetch data from API
+            var movies = await _tmdb.GetPopularMoviesAsync(100); // Fetch 100 movies
             await _db.SaveChangesAsync();
             return RedirectToAction("Index");
         }
